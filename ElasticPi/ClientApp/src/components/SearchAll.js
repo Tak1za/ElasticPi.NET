@@ -1,10 +1,24 @@
 ﻿import React, { Component } from 'react';
-
-
+import {SearchBar} from './SearchBar';
 
 export class SearchAll extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            data: [], loading: true, url: 'api/search/getall', paramUrl: ''
+        }
+    }
+
+    fetchedData = (data) => {
+        this.setState({
+            data: data
+        });
+    }
+
+    loadingData = (status) => {
+        this.setState({
+            loading: status
+        });
     }
 
     static renderSearchTable(data) {
@@ -43,10 +57,11 @@ export class SearchAll extends Component {
     }
 
     render() {
-        let contents = this.props.loading ? <p style={{marginTop: '10px'}}><em>Data will appear here</em></p> : SearchAll.renderSearchTable(this.props.data);
+        let contents = this.state.loading ? <p style={{marginTop: '10px'}}><em>Data will appear here</em></p> : SearchAll.renderSearchTable(this.state.data);
 
         return (
             <div>
+                <SearchBar fetchUrlBeginning={this.state.url} fetchUrlParam={this.state.paramUrl} fetchedData={this.fetchedData} loadingData={this.loadingData}/>
                 {contents}
             </div>
         )

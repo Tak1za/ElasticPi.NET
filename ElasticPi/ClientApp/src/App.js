@@ -4,7 +4,7 @@ import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
-import { SearchBar } from './components/SearchBar'
+import { SearchAll } from './components/SearchAll'
 import { SearchBy } from './components/SearchBy'; 
 
 export default class App extends Component {
@@ -16,7 +16,7 @@ export default class App extends Component {
         <Route exact path='/' component={Home} />
         <Route path='/counter' component={Counter} />
             <Route path='/fetch-data' component={FetchData} />
-            <Route path='/search-all' component={SearchBar} />
+            <Route path='/search-all' component={SearchAll} />
             <Route path='/search-by' component={SearchBy} />
       </Layout>
     );

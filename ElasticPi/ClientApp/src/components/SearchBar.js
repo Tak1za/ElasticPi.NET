@@ -1,12 +1,11 @@
 ﻿import React, { Component } from 'react';
-import { SearchAll } from './SearchAll';
-import { SearchBy } from './SearchBy';
 
 export class SearchBar extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            data: [], loading: true, url: 'api/search/getall', paramUrl: ''
+            paramUrl: ''
         }
     }
 
@@ -22,17 +21,16 @@ export class SearchBar extends Component {
 
     fetchData = () => {
         if (this.state.paramUrl === "") {
-            this.fetchUrl = this.state.url;
+            this.fetchUrl = this.props.fetchUrlBeginning;
         } else {
-            this.fetchUrl = this.state.url + "?" + this.state.paramUrl;
+            this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
         }
         fetch(this.fetchUrl)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                this.setState({ data: data, loading: false });
+                this.props.fetchedData(data);
+                this.props.loadingData(false);
             });
-
     }
 
     render() {
@@ -48,7 +46,6 @@ export class SearchBar extends Component {
                 >
                     Submit
                 </button>
-                <SearchAll data={this.state.data} loading={this.state.loading} />
             </div>
         )
     }
