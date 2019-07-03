@@ -22,12 +22,16 @@ export class SearchBar extends Component {
     fetchData = () => {
         if (this.state.paramUrl === "") {
             this.fetchUrl = this.props.fetchUrlBeginning;
-        } else {
+        } else if(this.props.fetchUrlParamField !== "" && this.state.paramUrl !== ""){
+            this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl + "&" + this.props.fetchUrlParamField
+        }else{
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
         }
+        console.log(this.fetchUrl);
         fetch(this.fetchUrl)
             .then(response => response.json())
             .then(data => {
+                this.props.resetData("true");
                 this.props.fetchedData(data);
                 this.props.loadingData(false);
             });
@@ -37,7 +41,7 @@ export class SearchBar extends Component {
         return (
             <div>
                 <div className="form-group">
-                    Entries: <input type="text" className="form-control" onChange={this.handleChange} name="size" defaultValue="10" />
+                    Entries <input type="text" className="form-control" onChange={this.handleChange} name="size" defaultValue="10" />
                 </div>
                 <button
                     type="button"

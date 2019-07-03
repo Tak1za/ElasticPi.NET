@@ -5,7 +5,7 @@ export class SearchAll extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [], loading: true, url: 'api/search/getall', paramUrl: ''
+            data: [], loading: true, url: 'api/search/getall'
         }
     }
 
@@ -61,7 +61,8 @@ export class SearchAll extends Component {
 
         return (
             <div>
-                <SearchBar fetchUrlBeginning={this.state.url} fetchUrlParam={this.state.paramUrl} fetchedData={this.fetchedData} loadingData={this.loadingData}/>
+                <h2>Search All</h2>
+                <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData}/>
                 {contents}
             </div>
         )

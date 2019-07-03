@@ -5,57 +5,82 @@ export class SearchBy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: false, value: ""
+            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: ""
         }
     }
 
     handleSelect = (event) => {
+        event.preventDefault();
         this.setState({
             selected: true,
-            value: event.target.value + ":"
-        })
+            selectedValue: event.target.value,
+            selectedId: event.target.id
+        });
+    }
+
+    handleFieldValue = (event) => {
+        event.preventDefault();
+        var fieldValueUrl = event.target.name + "=" + event.target.value;
+        this.setState({
+            paramFieldUrl: fieldValueUrl
+        });
+    }
+
+    fetchedData = (data) => {
+        this.setState({
+            data: data
+        });
+    }
+
+    loadingData = (status) => {
+        this.setState({
+            loading: status
+        });
+    }
+
+    resetData = (status) => {
+        if(status === "true"){
+            this.setState({
+                selectedId: "",
+                selectedValue: "",
+                selected: false,
+                paramFieldUrl: ""
+            });
+        }
     }
 
     render() {
         return (
             <div>
                 <h2>Search By</h2>
-                <div class="form-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="parameters" id="systemGuid" value="System GUID" onClick={this.handleSelect}/>
-                        <label class="form-check-label" for="systemGuid" onClick={this.handleSelect}>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="params" id="systemGuid" value="System GUID" onFocus={this.handleSelect}/>
+                        <label class="form-check-label" for="systemGuid">
                             System GUID
                         </label>
-                    </div>
                 </div>
-                <div class="form-group">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="parameters" id="organizationId" value="Organization ID" onClick={this.handleSelect}/>
-                        <label class="form-check-label" for="organizationId" onClick={this.handleSelect}>
-                            Organization ID
-                        </label>
+                        <input class="form-check-input" type="radio" name="params" id="organizationId" value="Organization ID" onFocus={this.handleSelect}/>
+                            <label class="form-check-label" for="organizationId">
+                                Organization ID
+                            </label>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="parameters" id="sensorId" value="Sensor ID" onClick={this.handleSelect}/>
-                        <label class="form-check-label" for="sensorId" onClick={this.handleSelect}>
-                            Sensor ID
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="parameters" id="occupancyValue" value="Occupancy Value" onClick={this.handleSelect}/>
-                        <label class="form-check-label" for="occupancyValue" onClick={this.handleSelect}>
-                            Occupancy Value
-                        </label>
-                    </div>
-                </div>
+                        <div class="form-check disabled">
+                            <input class="form-check-input" type="radio" name="params" id="sensorId" value="Sensor ID" onFocus={this.handleSelect}/>
+                                <label class="form-check-label" for="sensorId">
+                                    Sensor ID
+                                </label>
+                        </div>
+                        <div class="form-check disabled">
+                            <input class="form-check-input" type="radio" name="params" id="occupancyValue" value="Occupancy Value" onFocus={this.handleSelect}/>
+                                <label class="form-check-label" for="occupancyValue">
+                                    Occupancy Value
+                                </label>
+                        </div>
                 <div className="form-group">
-                    {this.state.value} {this.state.selected ? <input type="text" className="form-control"/> : ""}
+                    {this.state.selectedValue} {this.state.selected ? <input type="text" id="fields" className="form-control" onChange={this.handleFieldValue} name={this.state.selectedId}/> : ""}
                 </div>
-                <SearchBar />
+                <SearchBar fetchUrlBeginning={this.state.url} fetchUrlParamField={this.state.paramFieldUrl} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData}/>
             </div>
         )
     }
