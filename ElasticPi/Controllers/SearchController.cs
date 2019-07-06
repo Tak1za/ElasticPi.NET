@@ -90,7 +90,7 @@ namespace ElasticPi.Controllers
                 var data = searchResponse.Documents;
                 return data;
             }
-            else if (occupancyValue == 0 || occupancyValue == 1)
+            else if (occupancyValue>=0)
             {
                 var searchResponse = client.Search<Data>(s => s
                     .Size(size)
@@ -105,6 +105,7 @@ namespace ElasticPi.Controllers
                 return data;
             }
             else
+            //default display
             {
                 var searchResponse = client.Search<Data>(s => s
                     .Size(size)

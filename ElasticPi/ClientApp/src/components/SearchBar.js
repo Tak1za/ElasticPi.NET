@@ -1,12 +1,11 @@
 ﻿import React, { Component } from 'react';
-import { SearchAll } from './SearchAll';
-import { SearchBy } from './SearchBy';
 
 export class SearchBar extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            data: [], loading: true, url: 'api/search/getall', paramUrl: ''
+            paramUrl: 'size=10'
         }
     }
 
@@ -21,25 +20,31 @@ export class SearchBar extends Component {
     fetchUrl = '';
 
     fetchData = () => {
-        if (this.state.paramUrl === "") {
-            this.fetchUrl = this.state.url;
-        } else {
-            this.fetchUrl = this.state.url + "?" + this.state.paramUrl;
+        if (!this.props.fetchUrlParamField) {
+            this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
         }
+        else if(this.props.fetchUrlParamField !== "" && this.state.paramUrl !== ""){
+            this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl + "&" + this.props.fetchUrlParamField
+        }else{
+            this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
+        }
+        console.log(this.fetchUrl);
         fetch(this.fetchUrl)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                this.setState({ data: data, loading: false });
+                this.props.resetData("true");
+                this.props.fetchedData(data);
+                this.props.loadingData(false);
             });
-
     }
+
+    
 
     render() {
         return (
             <div>
                 <div className="form-group">
-                    Entries: <input type="text" className="form-control" onChange={this.handleChange} name="size" defaultValue="10" />
+                    Entries <input type="text" className="form-control" onChange={this.handleChange} name="size" defaultValue="10" />
                 </div>
                 <button
                     type="button"
@@ -48,7 +53,6 @@ export class SearchBar extends Component {
                 >
                     Submit
                 </button>
-                <SearchAll data={this.state.data} loading={this.state.loading} />
             </div>
         )
     }
