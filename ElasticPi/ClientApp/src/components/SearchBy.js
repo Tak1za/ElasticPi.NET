@@ -5,17 +5,33 @@ export class SearchBy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue:""
+            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: []
         }
     }
 
     handleSelect = (event) => {
-        event.preventDefault();
+        var newValueArray = [];
+        var newIdArray = [];
+        if (event.target.checked) {
+            console.log("checked");
+            newValueArray = this.state.selectedValueArray;
+            newValueArray.push(event.target.value);
+            newIdArray = this.state.selectedIdArray;
+            newIdArray.push(event.target.id);
+        }
+        else {
+            console.log("unchecked");
+            var index = this.state.selectedValueArray.indexOf(event.target.value);
+            newValueArray = this.state.selectedValueArray;
+            newIdArray = this.state.selectedIdArray;
+            if (index > -1) {
+                newValueArray.splice(index, 1);
+                newIdArray.splice(index, 1);
+            }
+        }
         this.setState({
-            selected: true,
-            selectedValue: event.target.value,
-            selectedId: event.target.id,
-            chosenValue: ""
+            selectedValueArray: newValueArray,
+            selectedIdArray: newIdArray
         });
     }
 
@@ -41,7 +57,7 @@ export class SearchBy extends Component {
     }
 
     resetData = (status) => {
-        if(status === "true"){
+        if (status === "true") {
             this.setState({
                 paramFieldUrl: "",
                 chosenValue: ""
@@ -90,31 +106,31 @@ export class SearchBy extends Component {
             <div>
                 <h2>Search By</h2>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="params" id="systemGuid" value="System GUID" onFocus={this.handleSelect}/>
-                        <label class="form-check-label" for="systemGuid">
-                            System GUID
+                    <input class="form-check-input" type="checkbox" name="systemGuid" id="systemGuid" value="System GUID" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="systemGuid">
+                        System GUID
                         </label>
                 </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="params" id="organizationId" value="Organization ID" onFocus={this.handleSelect}/>
-                            <label class="form-check-label" for="organizationId">
-                                Organization ID
-                            </label>
-                    </div>
-                        <div class="form-check disabled">
-                            <input class="form-check-input" type="radio" name="params" id="sensorId" value="Sensor ID" onFocus={this.handleSelect}/>
-                                <label class="form-check-label" for="sensorId">
-                                    Sensor ID
-                                </label>
-                        </div>
-                        <div class="form-check disabled">
-                            <input class="form-check-input" type="radio" name="params" id="occupancyValue" value="Occupancy Value" onFocus={this.handleSelect}/>
-                                <label class="form-check-label" for="occupancyValue">
-                                    Occupancy Value
-                                </label>
-                        </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="organizationId" id="organizationId" value="Organization ID" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="organizationId">
+                        Organization ID
+                        </label>
+                </div>
+                <div class="form-check disabled">
+                    <input class="form-check-input" type="checkbox" name="sensorId" id="sensorId" value="Sensor ID" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="sensorId">
+                        Sensor ID
+                        </label>
+                </div>
+                <div class="form-check disabled">
+                    <input class="form-check-input" type="checkbox" name="occupancyValue" id="occupancyValue" value="Occupancy Value" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="occupancyValue">
+                        Occupancy Value
+                        </label>
+                </div>
                 <div className="form-group">
-                    {this.state.selectedValue} {this.state.selected ? <input type="text" id="fields" className="form-control" onChange={this.handleFieldValue} name={this.state.selectedId} value={this.state.chosenValue}/> : ""}
+                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map(res => (<div key={res}>{res}<input type="text" className="form-control" onChange={this.handleCheckedFieldValue} name={res} value={this.state.chosenArrayFieldValue} /></div>)) : ""}
                 </div>
                 <SearchBar fetchUrlBeginning={this.state.url} fetchUrlParamField={this.state.paramFieldUrl} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} />
                 {contents}
