@@ -43,7 +43,8 @@ export class SearchBy extends Component {
     resetData = (status) => {
         if(status === "true"){
             this.setState({
-                paramFieldUrl: ""
+                paramFieldUrl: "",
+                chosenValue: ""
             });
         }
     }
