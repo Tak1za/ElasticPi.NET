@@ -5,7 +5,8 @@ export class SearchBy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: []
+            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: [],
+            systemGuid: "", sensorId: "", organizationId: "", occupancyValue: ""
         }
     }
 
@@ -35,13 +36,27 @@ export class SearchBy extends Component {
         });
     }
 
-    handleFieldValue = (event) => {
-        var fieldValueUrl = event.target.name + "=" + event.target.value;
-        console.log(fieldValueUrl);
-        this.setState({
-            paramFieldUrl: fieldValueUrl,
-            chosenValue: event.target.value
-        });
+    handleCheckedFieldValue = (event) => {
+        if (event.target.id === "systemGuid") {
+            this.setState({
+                systemGuid: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "sensorId") {
+            this.setState({
+                sensorId: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "organizationId") {
+            this.setState({
+                organizationId: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "occupancyValue") {
+            this.setState({
+                occupancyValue: event.target.id + "=" + event.target.value
+            });
+        }
     }
 
     fetchedData = (data) => {
@@ -130,9 +145,9 @@ export class SearchBy extends Component {
                         </label>
                 </div>
                 <div className="form-group">
-                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map(res => (<div key={res}>{res}<input type="text" className="form-control" onChange={this.handleCheckedFieldValue} name={res} value={this.state.chosenArrayFieldValue} /></div>)) : ""}
+                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedIdArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} value={this.state.chosenArrayFieldValue}/></div>)) : ""}
                 </div>
-                <SearchBar fetchUrlBeginning={this.state.url} fetchUrlParamField={this.state.paramFieldUrl} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} />
+                <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid} occupancyValue={this.state.occupancyValue}/>
                 {contents}
             </div>
         )

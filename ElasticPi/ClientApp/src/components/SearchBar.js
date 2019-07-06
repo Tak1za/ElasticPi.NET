@@ -20,25 +20,45 @@ export class SearchBar extends Component {
     fetchUrl = '';
 
     fetchData = () => {
-        if (!this.props.fetchUrlParamField) {
+        //if (!this.props.fetchUrlParamField) {
+        //    this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
+        //}
+        //else if(this.props.fetchUrlParamField !== "" && this.state.paramUrl !== ""){
+        //    this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl + "&" + this.props.fetchUrlParamField
+        //}else{
+        //    this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
+        //}
+        //console.log(this.fetchUrl);
+        //fetch(this.fetchUrl)
+        //    .then(response => response.json())
+        //    .then(data => {
+        //        this.props.resetData("true");
+        //        this.props.fetchedData(data);
+        //        this.props.loadingData(false);
+        //    });
+        if (this.props.sensorId === "" && this.props.systemGuid === "" && this.props.organizationId === "" && this.props.occupancyValue === "") {
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
         }
-        else if(this.props.fetchUrlParamField !== "" && this.state.paramUrl !== ""){
-            this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl + "&" + this.props.fetchUrlParamField
-        }else{
+        else {
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
+            if (this.props.sensorId !== "")
+                this.fetchUrl += "&" + this.props.sensorId
+            if (this.props.organizationId !== "")
+                this.fetchUrl += "&" + this.props.organizationId
+            if (this.props.systemGuid !== "")
+                this.fetchUrl += "&" + this.props.systemGuid
+            if (this.props.occupancyValue !== "")
+                this.fetchUrl += "&" + this.props.occupancyValue
         }
         console.log(this.fetchUrl);
         fetch(this.fetchUrl)
             .then(response => response.json())
             .then(data => {
-                this.props.resetData("true");
-                this.props.fetchedData(data);
-                this.props.loadingData(false);
+                this.props.resetdata("true");
+                this.props.fetcheddata(data);
+                this.props.loadingdata(false);
             });
     }
-
-    
 
     render() {
         return (
