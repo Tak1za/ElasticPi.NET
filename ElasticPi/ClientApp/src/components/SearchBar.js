@@ -5,7 +5,7 @@ export class SearchBar extends Component {
         super(props);
 
         this.state = {
-            paramUrl: ''
+            paramUrl: 'size=10'
         }
     }
 
@@ -20,9 +20,10 @@ export class SearchBar extends Component {
     fetchUrl = '';
 
     fetchData = () => {
-        if (this.state.paramUrl === "") {
-            this.fetchUrl = this.props.fetchUrlBeginning;
-        } else if(this.props.fetchUrlParamField !== "" && this.state.paramUrl !== ""){
+        if (!this.props.fetchUrlParamField) {
+            this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
+        }
+        else if(this.props.fetchUrlParamField !== "" && this.state.paramUrl !== ""){
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl + "&" + this.props.fetchUrlParamField
         }else{
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
@@ -36,6 +37,8 @@ export class SearchBar extends Component {
                 this.props.loadingData(false);
             });
     }
+
+    
 
     render() {
         return (
