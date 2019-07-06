@@ -40,23 +40,24 @@ export class SearchBar extends Component {
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
         }
         else {
+            console.log("reached");
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
-            if (this.props.sensorId !== "")
+            if (this.props.sensorId)
                 this.fetchUrl += "&" + this.props.sensorId
-            if (this.props.organizationId !== "")
+            if (this.props.organizationId)
                 this.fetchUrl += "&" + this.props.organizationId
-            if (this.props.systemGuid !== "")
+            if (this.props.systemGuid)
                 this.fetchUrl += "&" + this.props.systemGuid
-            if (this.props.occupancyValue !== "")
+            if (this.props.occupancyValue)
                 this.fetchUrl += "&" + this.props.occupancyValue
         }
         console.log(this.fetchUrl);
         fetch(this.fetchUrl)
             .then(response => response.json())
             .then(data => {
-                this.props.resetdata("true");
-                this.props.fetcheddata(data);
-                this.props.loadingdata(false);
+                this.props.resetData("true");
+                this.props.fetchedData(data);
+                this.props.loadingData(false);
             });
     }
 

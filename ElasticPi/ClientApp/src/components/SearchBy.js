@@ -27,6 +27,14 @@ export class SearchBy extends Component {
             newIdArray = this.state.selectedIdArray;
             if (index > -1) {
                 newValueArray.splice(index, 1);
+                if (newIdArray[index] === "sensorId") 
+                    this.setState({ sensorId: "" })
+                if (newIdArray[index] === "organizationId")
+                    this.setState({ organizationId: "" })
+                if (newIdArray[index] === "systemGuid")
+                    this.setState({ systemGuid: "" })
+                if (newIdArray[index] === "occupancyValue")
+                    this.setState({ occupancyValue: "" })
                 newIdArray.splice(index, 1);
             }
         }
