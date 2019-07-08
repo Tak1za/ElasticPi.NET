@@ -124,7 +124,7 @@ export class SearchBy extends Component {
     }
 
     render() {
-        let contents = this.state.loading ? <p style={{ marginTop: '10px' }}><em>Data will appear here</em></p> : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
+        let contents = this.state.loading ? <p style={{ marginTop: '10px' }}><em>Data will appear here...</em></p> : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
         return (
             <div>
                 <h2>Search By</h2>

@@ -65,7 +65,7 @@ export class SearchAll extends Component {
     }
 
     render() {
-        let contents = this.state.loading ? <p style={{ marginTop: '10px' }}><em>Data will appear here</em></p> : (this.state.data.length > 0) ? SearchAll.renderSearchTable(this.state.data) : <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
+        let contents = this.state.loading ? <p style={{ marginTop: '10px' }}><em>Data will appear here...</em></p> : (this.state.data.length > 0) ? SearchAll.renderSearchTable(this.state.data) : <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
 
         return (
             <div>
