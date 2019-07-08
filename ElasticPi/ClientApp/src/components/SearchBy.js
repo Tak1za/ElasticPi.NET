@@ -5,7 +5,7 @@ export class SearchBy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            boilerText: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: [],
+            boilerText: false, data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: [],
             systemGuid: "", sensorId: "", organizationId: "", occupancyValue: ""
         }
     }
@@ -62,21 +62,11 @@ export class SearchBy extends Component {
         });
     }
 
-    resetData = (status) => {
-        if (status === "true") {
-            this.setState({
-                paramFieldUrl: "",
-                chosenValue: ""
-            });
-        }
-    }
-
     clearData = () => {
         document.getElementById('sensorId').checked = false;
         document.getElementById('organizationId').checked = false;
         document.getElementById('systemGuid').checked = false;
         document.getElementById('occupancyValue').checked = false;
-        document.getElementById("entries").value = "";
         this.setState({
             selectedIdArray: [],
             selectedValueArray: [],
@@ -161,7 +151,7 @@ export class SearchBy extends Component {
                     {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedIdArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} /></div>)) : ""}
                 </div>
                 <div className="form-group">
-                    <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid} occupancyValue={this.state.occupancyValue} />
+                    <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid} occupancyValue={this.state.occupancyValue}/>
                 </div>
                 <div className="form-group">
                     <button className="btn btn-primary" type="button" onClick={this.clearData}>Clear</button>
