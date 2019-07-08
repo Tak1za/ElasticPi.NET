@@ -48,75 +48,116 @@ namespace ElasticPi.Controllers
 
             var client = new ElasticClient(settings);
 
+            List<object> fieldsValue = new List<object>();
+            List<string> fieldsName = new List<string>();
             if (!String.IsNullOrEmpty(systemGuid))
             {
-                var searchResponse = client.Search<Data>(s => s
-                    .Size(size)
-                    .Query(q => q
-                        .Match(m => m
-                            .Field(f => f.systemGuid)
-                            .Query(systemGuid)
-                        )
-                    )
-                );
-                var data = searchResponse.Documents;
-                return data;
+                fieldsValue.Add(systemGuid);
+                fieldsName.Add(nameof(systemGuid));
             }
-            else if (!String.IsNullOrEmpty(organizationId))
+            if (!String.IsNullOrEmpty(sensorId))
             {
-                var searchResponse = client.Search<Data>(s => s
-                    .Size(size)
-                    .Query(q => q
-                        .Match(m => m
-                            .Field(f => f.organizationId)
-                            .Query(organizationId)
-                        )
-                    )
-                );
-                var data = searchResponse.Documents;
-                return data;
+                fieldsValue.Add(sensorId);
+                fieldsName.Add(nameof(sensorId));
             }
-            else if (!String.IsNullOrEmpty(sensorId))
-            {
-                var searchResponse = client.Search<Data>(s => s
-                    .Size(size)
-                    .Query(q => q
-                        .Match(m => m
-                            .Field(f => f.sensorId)
-                            .Query(sensorId)
-                        )
-                    )
-                );
-                var data = searchResponse.Documents;
-                return data;
-            }
-            else if (occupancyValue>=0)
-            {
-                var searchResponse = client.Search<Data>(s => s
-                    .Size(size)
-                    .Query(q => q
-                        .Match(m => m
-                            .Field(f => f.occupancyValue)
-                            .Query(Convert.ToString(occupancyValue))
-                        )
-                    )
-                );
-                var data = searchResponse.Documents;
-                return data;
-            }
-            else
-            //default display
-            {
-                var searchResponse = client.Search<Data>(s => s
-                    .Size(size)
-                    .Query(q => q
-                        .MatchAll()
-                    )
-                );
 
-                var data = searchResponse.Documents;
-                return data;
+            if (!String.IsNullOrEmpty(organizationId))
+            {
+                fieldsValue.Add(organizationId);
+                fieldsName.Add(nameof(organizationId));
             }
+
+            if (occupancyValue >= 0)
+            {
+                fieldsValue.Add(occupancyValue);
+                fieldsName.Add(nameof(occupancyValue));
+            }
+
+            var c = new QueryContainer();
+            for(int i=0; i<fieldsValue.Count; i++)
+            {
+
+                    var q = new TermQuery { Field = fieldsName[i], Value = fieldsValue[i] };
+                    c &= q;
+            }
+
+            var searchResponse = client.Search<Data>(new SearchRequest<Data> {
+                Size = size,
+                Query = c
+            });
+
+            var data = searchResponse.Documents;
+            return data;
+
+            //if (!String.IsNullOrEmpty(systemGuid))
+            //{
+            //    var searchResponse = client.Search<Data>(s => s
+            //        .Size(size)
+            //        .Query(q => q
+            //            .Match(m => m
+            //                .Field(f => f.systemGuid)
+            //                .Query(systemGuid)
+            //            )
+            //        )
+            //    );
+            //    var data = searchResponse.Documents;
+            //    return data;
+            //}
+            //else if (!String.IsNullOrEmpty(organizationId))
+            //{
+            //    var searchResponse = client.Search<Data>(s => s
+            //        .Size(size)
+            //        .Query(q => q
+            //            .Match(m => m
+            //                .Field(f => f.organizationId)
+            //                .Query(organizationId)
+            //            )
+            //        )
+            //    );
+            //    var data = searchResponse.Documents;
+            //    return data;
+            //}
+            //else if (!String.IsNullOrEmpty(sensorId))
+            //{
+            //    var searchResponse = client.Search<Data>(s => s
+            //        .Size(size)
+            //        .Query(q => q
+            //            .Match(m => m
+            //                .Field(f => f.sensorId)
+            //                .Query(sensorId)
+            //            )
+            //        )
+            //    );
+            //    var data = searchResponse.Documents;
+            //    return data;
+            //}
+            //else if (occupancyValue>=0)
+            //{
+            //    var searchResponse = client.Search<Data>(s => s
+            //        .Size(size)
+            //        .Query(q => q
+            //            .Match(m => m
+            //                .Field(f => f.occupancyValue)
+            //                .Query(Convert.ToString(occupancyValue))
+            //            )
+            //        )
+            //    );
+            //    var data = searchResponse.Documents;
+            //    return data;
+            //}
+            //else
+            ////default display
+            //{
+            //    var searchResponse = client.Search<Data>(s => s
+            //        .Size(size)
+            //        .Query(q => q
+            //            .MatchAll()
+            //        )
+            //    );
+
+            //    var data = searchResponse.Documents;
+            //    return data;
+            //}
         }
     }
 }

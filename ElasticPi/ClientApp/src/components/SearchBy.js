@@ -5,27 +5,66 @@ export class SearchBy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue:""
+            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: [],
+            systemGuid: "", sensorId: "", organizationId: "", occupancyValue: ""
         }
     }
 
     handleSelect = (event) => {
-        event.preventDefault();
+        var newValueArray = [];
+        var newIdArray = [];
+        if (event.target.checked) {
+            console.log("checked");
+            newValueArray = this.state.selectedValueArray;
+            newValueArray.push(event.target.value);
+            newIdArray = this.state.selectedIdArray;
+            newIdArray.push(event.target.id);
+        }
+        else {
+            console.log("unchecked");
+            var index = this.state.selectedValueArray.indexOf(event.target.value);
+            newValueArray = this.state.selectedValueArray;
+            newIdArray = this.state.selectedIdArray;
+            if (index > -1) {
+                newValueArray.splice(index, 1);
+                if (newIdArray[index] === "sensorId") 
+                    this.setState({ sensorId: "" })
+                if (newIdArray[index] === "organizationId")
+                    this.setState({ organizationId: "" })
+                if (newIdArray[index] === "systemGuid")
+                    this.setState({ systemGuid: "" })
+                if (newIdArray[index] === "occupancyValue")
+                    this.setState({ occupancyValue: "" })
+                newIdArray.splice(index, 1);
+            }
+        }
         this.setState({
-            selected: true,
-            selectedValue: event.target.value,
-            selectedId: event.target.id,
-            chosenValue: ""
+            selectedValueArray: newValueArray,
+            selectedIdArray: newIdArray
         });
     }
 
-    handleFieldValue = (event) => {
-        var fieldValueUrl = event.target.name + "=" + event.target.value;
-        console.log(fieldValueUrl);
-        this.setState({
-            paramFieldUrl: fieldValueUrl,
-            chosenValue: event.target.value
-        });
+    handleCheckedFieldValue = (event) => {
+        if (event.target.id === "systemGuid") {
+            this.setState({
+                systemGuid: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "sensorId") {
+            this.setState({
+                sensorId: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "organizationId") {
+            this.setState({
+                organizationId: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "occupancyValue") {
+            this.setState({
+                occupancyValue: event.target.id + "=" + event.target.value
+            });
+        }
     }
 
     fetchedData = (data) => {
@@ -41,7 +80,7 @@ export class SearchBy extends Component {
     }
 
     resetData = (status) => {
-        if(status === "true"){
+        if (status === "true") {
             this.setState({
                 paramFieldUrl: "",
                 chosenValue: ""
@@ -85,38 +124,38 @@ export class SearchBy extends Component {
     }
 
     render() {
-        let contents = this.state.loading ? <p style={{ marginTop: '10px' }}><em>Data will appear here</em></p> : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
+        let contents = this.state.loading ? <p style={{ marginTop: '10px' }}><em>Data will appear here...</em></p> : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
         return (
             <div>
                 <h2>Search By</h2>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="params" id="systemGuid" value="System GUID" onFocus={this.handleSelect}/>
-                        <label class="form-check-label" for="systemGuid">
-                            System GUID
+                    <input class="form-check-input" type="checkbox" name="systemGuid" id="systemGuid" value="System GUID" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="systemGuid">
+                        System GUID
                         </label>
                 </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="params" id="organizationId" value="Organization ID" onFocus={this.handleSelect}/>
-                            <label class="form-check-label" for="organizationId">
-                                Organization ID
-                            </label>
-                    </div>
-                        <div class="form-check disabled">
-                            <input class="form-check-input" type="radio" name="params" id="sensorId" value="Sensor ID" onFocus={this.handleSelect}/>
-                                <label class="form-check-label" for="sensorId">
-                                    Sensor ID
-                                </label>
-                        </div>
-                        <div class="form-check disabled">
-                            <input class="form-check-input" type="radio" name="params" id="occupancyValue" value="Occupancy Value" onFocus={this.handleSelect}/>
-                                <label class="form-check-label" for="occupancyValue">
-                                    Occupancy Value
-                                </label>
-                        </div>
-                <div className="form-group">
-                    {this.state.selectedValue} {this.state.selected ? <input type="text" id="fields" className="form-control" onChange={this.handleFieldValue} name={this.state.selectedId} value={this.state.chosenValue}/> : ""}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="organizationId" id="organizationId" value="Organization ID" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="organizationId">
+                        Organization ID
+                        </label>
                 </div>
-                <SearchBar fetchUrlBeginning={this.state.url} fetchUrlParamField={this.state.paramFieldUrl} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} />
+                <div class="form-check disabled">
+                    <input class="form-check-input" type="checkbox" name="sensorId" id="sensorId" value="Sensor ID" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="sensorId">
+                        Sensor ID
+                        </label>
+                </div>
+                <div class="form-check disabled">
+                    <input class="form-check-input" type="checkbox" name="occupancyValue" id="occupancyValue" value="Occupancy Value" onChange={this.handleSelect} />
+                    <label class="form-check-label" for="occupancyValue">
+                        Occupancy Value
+                        </label>
+                </div>
+                <div className="form-group">
+                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedIdArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} value={this.state.chosenArrayFieldValue}/></div>)) : ""}
+                </div>
+                <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid} occupancyValue={this.state.occupancyValue}/>
                 {contents}
             </div>
         )
