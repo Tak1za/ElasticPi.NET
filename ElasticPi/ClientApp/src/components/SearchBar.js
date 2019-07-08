@@ -39,7 +39,6 @@ export class SearchBar extends Component {
         fetch(this.fetchUrl)
             .then(response => response.json())
             .then(data => {
-                this.props.resetData("true");
                 this.props.fetchedData(data);
                 this.props.loadingData(false);
             });
@@ -49,7 +48,7 @@ export class SearchBar extends Component {
         return (
             <div>
                 <div className="form-group">
-                    Entries <input type="text" className="form-control" onChange={this.handleChange} name="size" placeholder="10" id="entries"/>
+                    Entries <input type="text" className="form-control" onChange={this.handleChange} name="size" defaultValue="10"/>
                 </div>
                 <button
                     type="button"

@@ -22,20 +22,11 @@ export class SearchAll extends Component {
         });
     }
 
-    resetData = (status) => {
-        if (status === "true") {
-            this.setState({
-                data: []
-            });
-        }
-    }
-
     clearData = () => {
         this.setState({
             data: [],
             boilerText: true
         });
-        document.getElementById("entries").value = "";
     }
 
     static renderSearchTable(data) {
@@ -83,7 +74,7 @@ export class SearchAll extends Component {
             <div>
                 <h2>Search All</h2>
                 <div className="form-group">
-                    <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} />
+                    <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} />
                 </div>
                 <div className="form-group">
                     <button className="btn btn-primary" type="button" onClick={this.clearData}>Clear</button>
