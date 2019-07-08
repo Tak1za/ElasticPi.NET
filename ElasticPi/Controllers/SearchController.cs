@@ -23,21 +23,29 @@ namespace ElasticPi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<Data> GetAll(int size=10)
+        public IEnumerable<Data> GetAll(int size = 10)
         {
             var settings = new ConnectionSettings(new Uri("http://10.8.173.181"))
             .DefaultIndex("ss-standardizedsensordata");
 
             var client = new ElasticClient(settings);
-            var searchResponse = client.Search<Data>(s => s
+            if (size <= 0)
+            {
+                var data = new List<Data>();
+                return data;
+            }
+            else
+            {
+                var searchResponse = client.Search<Data>(s => s
                 .Size(size)
                 .Query(q => q
                     .MatchAll()
                 )
             );
 
-            var data = searchResponse.Documents;
-            return data;
+                var data = searchResponse.Documents;
+                return data;
+            }
         }
 
         [HttpGet("[action]")]

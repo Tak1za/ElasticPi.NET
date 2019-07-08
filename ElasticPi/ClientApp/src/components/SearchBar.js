@@ -49,7 +49,7 @@ export class SearchBar extends Component {
         return (
             <div>
                 <div className="form-group">
-                    Entries <input type="text" className="form-control" onChange={this.handleChange} name="size" defaultValue="10" />
+                    Entries <input type="text" className="form-control" onChange={this.handleChange} name="size" placeholder="10" id="entries"/>
                 </div>
                 <button
                     type="button"
