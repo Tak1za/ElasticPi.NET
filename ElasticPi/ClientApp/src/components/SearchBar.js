@@ -20,22 +20,6 @@ export class SearchBar extends Component {
     fetchUrl = '';
 
     fetchData = () => {
-        //if (!this.props.fetchUrlParamField) {
-        //    this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
-        //}
-        //else if(this.props.fetchUrlParamField !== "" && this.state.paramUrl !== ""){
-        //    this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl + "&" + this.props.fetchUrlParamField
-        //}else{
-        //    this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
-        //}
-        //console.log(this.fetchUrl);
-        //fetch(this.fetchUrl)
-        //    .then(response => response.json())
-        //    .then(data => {
-        //        this.props.resetData("true");
-        //        this.props.fetchedData(data);
-        //        this.props.loadingData(false);
-        //    });
         if (this.props.sensorId === "" && this.props.systemGuid === "" && this.props.organizationId === "" && this.props.occupancyValue === "") {
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
         }

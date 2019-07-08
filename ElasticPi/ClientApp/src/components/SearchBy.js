@@ -5,43 +5,25 @@ export class SearchBy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: [],
+            boilerText: false, selectedValue: "", selectedId: "", data: [], loading: true, url: 'api/search/getby', paramFieldUrl: "", chosenValue: "", selectedValueArray: [], selectedIdArray: [],
             systemGuid: "", sensorId: "", organizationId: "", occupancyValue: ""
         }
     }
 
     handleSelect = (event) => {
-        var newValueArray = [];
-        var newIdArray = [];
         if (event.target.checked) {
-            console.log("checked");
-            newValueArray = this.state.selectedValueArray;
-            newValueArray.push(event.target.value);
-            newIdArray = this.state.selectedIdArray;
-            newIdArray.push(event.target.id);
+            this.setState({
+                selectedValueArray: [...this.state.selectedValueArray, event.target.value],
+                selectedIdArray: [...this.state.selectedIdArray, event.target.id]
+            });
         }
         else {
-            console.log("unchecked");
-            var index = this.state.selectedValueArray.indexOf(event.target.value);
-            newValueArray = this.state.selectedValueArray;
-            newIdArray = this.state.selectedIdArray;
-            if (index > -1) {
-                newValueArray.splice(index, 1);
-                if (newIdArray[index] === "sensorId") 
-                    this.setState({ sensorId: "" })
-                if (newIdArray[index] === "organizationId")
-                    this.setState({ organizationId: "" })
-                if (newIdArray[index] === "systemGuid")
-                    this.setState({ systemGuid: "" })
-                if (newIdArray[index] === "occupancyValue")
-                    this.setState({ occupancyValue: "" })
-                newIdArray.splice(index, 1);
-            }
+            this.setState({
+                selectedValueArray: this.state.selectedValueArray.filter(item => item !== event.target.value),
+                selectedIdArray: this.state.selectedIdArray.filter(item => item !== event.target.id)
+            });
         }
-        this.setState({
-            selectedValueArray: newValueArray,
-            selectedIdArray: newIdArray
-        });
+        
     }
 
     handleCheckedFieldValue = (event) => {
@@ -69,7 +51,8 @@ export class SearchBy extends Component {
 
     fetchedData = (data) => {
         this.setState({
-            data: data
+            data: data,
+            boilerText: false
         });
     }
 
@@ -86,6 +69,23 @@ export class SearchBy extends Component {
                 chosenValue: ""
             });
         }
+    }
+
+    clearData = () => {
+        document.getElementById('sensorId').checked = false;
+        document.getElementById('organizationId').checked = false;
+        document.getElementById('systemGuid').checked = false;
+        document.getElementById('occupancyValue').checked = false;
+        this.setState({
+            selectedIdArray: [],
+            selectedValueArray: [],
+            sensorId: "",
+            organizationId: "",
+            systemGuid: "",
+            occupancyValue: "",
+            data: [],
+            boilerText: true
+        });
     }
 
     static renderSearchTable(data) {
@@ -124,7 +124,11 @@ export class SearchBy extends Component {
     }
 
     render() {
-        let contents = this.state.loading ? <p style={{ marginTop: '10px' }}><em>Data will appear here...</em></p> : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
+        let dataAppearsHere = <p style={{ marginTop: '10px' }}><em>Data will appear here...</em></p>;
+        let noResultsFound = <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
+
+        let contents = this.state.loading ? dataAppearsHere : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : this.state.boilerCode ? dataAppearsHere : noResultsFound;
+
         return (
             <div>
                 <h2>Search By</h2>
@@ -153,9 +157,14 @@ export class SearchBy extends Component {
                         </label>
                 </div>
                 <div className="form-group">
-                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedIdArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} value={this.state.chosenArrayFieldValue}/></div>)) : ""}
+                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedIdArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} value={this.state.chosenArrayFieldValue} /></div>)) : ""}
                 </div>
-                <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid} occupancyValue={this.state.occupancyValue}/>
+                <div className="form-group">
+                    <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid} occupancyValue={this.state.occupancyValue} />
+                </div>
+                <div className="form-group">
+                    <button className="btn btn-primary" type="button" onClick={this.clearData}>Clear</button>
+                </div>
                 {contents}
             </div>
         )

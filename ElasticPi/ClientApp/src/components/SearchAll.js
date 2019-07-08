@@ -70,7 +70,7 @@ export class SearchAll extends Component {
         return (
             <div>
                 <h2>Search All</h2>
-                <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData}/>
+                <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} />
                 {contents}
             </div>
         )
