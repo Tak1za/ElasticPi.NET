@@ -76,6 +76,7 @@ export class SearchBy extends Component {
         document.getElementById('organizationId').checked = false;
         document.getElementById('systemGuid').checked = false;
         document.getElementById('occupancyValue').checked = false;
+        document.getElementById("entries").value = "";
         this.setState({
             selectedIdArray: [],
             selectedValueArray: [],
@@ -127,7 +128,7 @@ export class SearchBy extends Component {
         let dataAppearsHere = <p style={{ marginTop: '10px' }}><em>Data will appear here...</em></p>;
         let noResultsFound = <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
 
-        let contents = this.state.loading ? dataAppearsHere : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : this.state.boilerCode ? dataAppearsHere : noResultsFound;
+        let contents = this.state.loading ? dataAppearsHere : (this.state.data.length > 0) ? SearchBy.renderSearchTable(this.state.data) : this.state.boilerText ? dataAppearsHere : noResultsFound;
 
         return (
             <div>
@@ -157,7 +158,7 @@ export class SearchBy extends Component {
                         </label>
                 </div>
                 <div className="form-group">
-                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedIdArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} value={this.state.chosenArrayFieldValue} /></div>)) : ""}
+                    {this.state.selectedValueArray && this.state.selectedValueArray.length > 0 ? this.state.selectedValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedIdArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} /></div>)) : ""}
                 </div>
                 <div className="form-group">
                     <SearchBar fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} resetData={this.resetData} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid} occupancyValue={this.state.occupancyValue} />
