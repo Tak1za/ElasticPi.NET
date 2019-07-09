@@ -135,13 +135,13 @@ export class SearchBy extends Component {
                         Organization ID
                         </label>
                 </div>
-                <div class="form-check disabled">
+                <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="sensorId" id="sensorId" value="Sensor ID" onChange={this.handleSelect} />
                     <label class="form-check-label" for="sensorId">
                         Sensor ID
                         </label>
                 </div>
-                <div class="form-check disabled">
+                <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="occupancyValue" id="occupancyValue" value="Occupancy Value" onChange={this.handleSelect} />
                     <label class="form-check-label" for="occupancyValue">
                         Occupancy Value

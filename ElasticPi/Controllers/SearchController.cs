@@ -63,6 +63,7 @@ namespace ElasticPi.Controllers
                 fieldsValue.Add(systemGuid);
                 fieldsName.Add(nameof(systemGuid));
             }
+
             if (!String.IsNullOrEmpty(sensorId))
             {
                 fieldsValue.Add(sensorId);
