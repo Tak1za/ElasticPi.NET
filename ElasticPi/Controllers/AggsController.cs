@@ -15,89 +15,55 @@ namespace ElasticPi.Controllers
     {
         public class Occupancy
         {
-            public double Avg { get; set; }
-            public double Sum { get; set; }
+            public double avg { get; set; }
+            public double sum { get; set; }
+
+            public double min { get; set; }
+            public double max { get; set; }
+            public double cardinality { get; set; }
+            public double count { get; set; }
         }
         public class DataOccupancy
         {
             //public string systemGuid { get; set; }
-            public string OrganizationId { get; set; }
+            public string organizationId { get; set; }
             //public string sensorId { get; set; }
-            public Occupancy OccupancyValue { get; set; }
+            public Occupancy occupancyValue { get; set; }
             //public string captureTime { get; set; }
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<DataOccupancy> GetAggs(List<string> groupBy, List<string> aggsOccupancy, int size = 10)
+        public IEnumerable<DataOccupancy> GetAggs(List<string> groupBy, string aggsSelect, int size = 10)
         {
-            string index = "occupancyvalue_avg_sum_by_";
-            for(int i=0; i<groupBy.Count; i++)
+            if (!String.IsNullOrEmpty(aggsSelect) && size > 0 && groupBy.Count > 0)
             {
-                index += groupBy[i].ToLower();
-            }
+                //string index = aggsSelect.ToLower() + "_avg_sum_by_";
+                string index = aggsSelect.ToLower() + "_aggs_by_";
+                for (int i = 0; i < groupBy.Count; i++)
+                {
+                    index += groupBy[i].ToLower();
+                }
 
-            var settings = new ConnectionSettings(new Uri("http://10.8.173.181"))
-            .DefaultIndex(index);
+                var settings = new ConnectionSettings(new Uri("http://10.8.173.181"))
+                .DefaultIndex(index);
 
-            var client = new ElasticClient(settings);
-            if (size <= 0)
-            {
-                var data = new List<DataOccupancy>();
+                var client = new ElasticClient(settings);
+
+                var searchResponse = client.Search<DataOccupancy>(s => s
+                    .Size(size)
+                    .Query(q => q)
+                    .Source(src => src
+                        .IncludeAll()
+                    )
+                );
+
+                var data = searchResponse.Documents;
                 return data;
             }
             else
             {
-                if (aggsOccupancy.Count == 2)
-                {
-                    var searchResponse = client.Search<DataOccupancy>(s => s
-                        .Size(size)
-                        .Query(q => q)
-                        .Source(src => src
-                            .IncludeAll()
-                        )
-                    );
-                   
-                    var data = searchResponse.Documents;
-                    return data;
-                }
-                else
-                {
-                    if(aggsOccupancy[0] == "avg")
-                    {
-                        var searchResponse = client.Search<DataOccupancy>(s => s
-                            .Size(size)
-                            .Query(q => q)
-                            .Source(src => src
-                                .IncludeAll()
-                                .Excludes(e => e
-                                    .Fields(
-                                        f => f.OccupancyValue.Sum
-                                    )
-                                )
-                            )
-                        );
-                        var data = searchResponse.Documents;
-                        return data;
-                    }
-                    else
-                    {
-                        var searchResponse = client.Search<DataOccupancy>(s => s
-                            .Size(size)
-                            .Query(q => q)
-                            .Source(src => src
-                                .IncludeAll()
-                                .Excludes(e => e
-                                    .Fields(
-                                        f => f.OccupancyValue.Avg
-                                    )
-                                )
-                            )
-                        );
-                        var data = searchResponse.Documents;
-                        return data;
-                    }
-                }
-                
+                var data = new List<DataOccupancy>();
+                return data;
             }
         }
     }

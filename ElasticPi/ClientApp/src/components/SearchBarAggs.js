@@ -20,7 +20,7 @@ export class SearchBarAggs extends Component {
     fetchUrl = '';
 
     fetchData = () => {
-        if (this.props.selectedGroupByArray.length === 0 || this.props.selectedOccupancyArray.length === 0) {
+        if (this.props.selectedGroupByArray.length === 0 || !this.props.selectedAggs) {
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
         }
         else {
@@ -28,9 +28,8 @@ export class SearchBarAggs extends Component {
             for (var i = 0; i < this.props.selectedGroupByArray.length; i++) {
                 this.fetchUrl += "&groupby=" + this.props.selectedGroupByArray
             }
-            for (var i = 0; i < this.props.selectedOccupancyArray.length; i++) {
-                this.fetchUrl += "&aggsOccupancy=" + this.props.selectedOccupancyArray[i]
-            }
+            if (this.props.selectedAggs)
+                this.fetchUrl += "&aggsSelect=" + this.props.selectedAggs;
         }
         console.log(this.fetchUrl);
         fetch(this.fetchUrl)

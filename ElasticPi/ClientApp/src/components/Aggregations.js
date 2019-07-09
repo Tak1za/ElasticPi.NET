@@ -6,7 +6,7 @@ export class Aggregations extends Component {
         super(props);
 
         this.state = {
-            data: [], loading: true, url: 'api/aggs/getaggs', selectedGroupByArray: [], selectedOccupancyArray: []
+            data: [], loading: true, url: 'api/aggs/getaggs', selectedGroupByArray: [], aggsSelect: ""
         }
     }
 
@@ -22,16 +22,10 @@ export class Aggregations extends Component {
         }
     }
 
-    handleOccupancySelect = (event) => {
-        if (event.target.checked) {
-            this.setState({
-                selectedOccupancyArray: [...this.state.selectedOccupancyArray, event.target.id]
-            });
-        } else {
-            this.setState({
-                selectedOccupancyArray: this.state.selectedOccupancyArray.filter(item => item !== event.target.id)
-            });
-        }
+    handleAggsSelect = (event) => {
+        this.setState({
+            aggsSelect: event.target.id
+        })
         
     }
 
@@ -48,6 +42,17 @@ export class Aggregations extends Component {
         });
     }
 
+    clearData = () => {
+        document.getElementById('organizationId').checked = false;
+        document.getElementById('occupancyValue').checked = false;
+        this.setState({
+            data: [],
+            selectedGroupByArray: [],
+            aggsSelect: "",
+            boilerText: true
+        });
+    }
+
     static renderSearchTable(data) {
         var i = 0;
         return (
@@ -57,6 +62,10 @@ export class Aggregations extends Component {
                         <th>Organization ID</th>
                         <th>Average</th>
                         <th>Sum</th>
+                        <th>Max</th>
+                        <th>Min</th>
+                        <th>Cardinality</th>
+                        <th>Count</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,6 +74,10 @@ export class Aggregations extends Component {
                             <td>{result.organizationId}</td>
                             <td>{result.occupancyValue.avg}</td>
                             <td>{result.occupancyValue.sum}</td>
+                            <td>{result.occupancyValue.max}</td>
+                            <td>{result.occupancyValue.min}</td>
+                            <td>{result.occupancyValue.cardinality}</td>
+                            <td>{result.occupancyValue.count}</td>
                         </tr>
                     )}
                 </tbody>
@@ -96,26 +109,15 @@ export class Aggregations extends Component {
                 <em><h6>Aggregations:</h6></em>
                 <div className="form-group">
                     <div className="form-check">
-                        <label className="form-check-label">Occupancy Value: </label>
-                        <div class="form-check">
-                            <input className="form-check-input" type="checkbox" name="avg" id="avg" value="Average" onChange={this.handleOccupancySelect} />
-                            <label className="form-check-label" for="avg">
-                                Average
-                        </label>
-                        </div>
-                        <div class="form-check">
-                            <input className="form-check-input" type="checkbox" name="sum" id="sum" value="Sum" onChange={this.handleOccupancySelect} />
-                            <label className="form-check-label" for="sum">
-                                Sum
-                            </label>
-                        </div>
+                        <input className="form-check-input" type="radio" name="occupancyValue" id="occupancyValue" value="Occupancy Value" onChange={this.handleAggsSelect} />
+                        <label className="form-check-label" for="occupancyValue">Occupancy Value</label>
                     </div>
                 </div>
                 <div className="form-group">
-                    <SearchBarAggs fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} selectedGroupByArray={this.state.selectedGroupByArray} selectedOccupancyArray={this.state.selectedOccupancyArray} />
+                    <SearchBarAggs fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} selectedGroupByArray={this.state.selectedGroupByArray} selectedAggs={this.state.aggsSelect} />
                 </div>
                 <div className="form-group">
-                    <button className="btn btn-primary" type="button">Clear</button>
+                    <button className="btn btn-primary" type="button" onClick={this.clearData}>Clear</button>
                 </div>
                 {contents}
             </div>
