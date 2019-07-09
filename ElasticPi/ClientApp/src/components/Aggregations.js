@@ -1,5 +1,9 @@
 ﻿import React, { Component } from 'react';
 import { SearchBarAggs } from './SearchBarAggs';
+import { renderOccupancyAggsOrganizationTable } from './RenderTable.js';
+import { renderOccupancyAggsSensorTable } from './RenderTable.js';
+import { renderOccupancyAggsOrganizationSensorTable } from './RenderTable.js';
+
 
 export class Aggregations extends Component {
     constructor(props) {
@@ -26,7 +30,7 @@ export class Aggregations extends Component {
         this.setState({
             aggsSelect: event.target.id
         })
-        
+
     }
 
     fetchedData = (data) => {
@@ -44,6 +48,7 @@ export class Aggregations extends Component {
 
     clearData = () => {
         document.getElementById('organizationId').checked = false;
+        document.getElementById('sensorId').checked = false;
         document.getElementById('occupancyValue').checked = false;
         this.setState({
             data: [],
@@ -53,57 +58,48 @@ export class Aggregations extends Component {
         });
     }
 
-    static renderSearchTable(data) {
-        var i = 0;
-        return (
-            <table className='table table-striped table-bordered text-center' id="grid" style={{ marginTop: '20px' }}>
-                <thead>
-                    <tr id="rows">
-                        <th>Organization ID</th>
-                        <th>Average</th>
-                        <th>Sum</th>
-                        <th>Max</th>
-                        <th>Min</th>
-                        <th>Cardinality</th>
-                        <th>Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map(result =>
-                        <tr key={i++}>
-                            <td>{result.organizationId}</td>
-                            <td>{result.occupancyValue.avg}</td>
-                            <td>{result.occupancyValue.sum}</td>
-                            <td>{result.occupancyValue.max}</td>
-                            <td>{result.occupancyValue.min}</td>
-                            <td>{result.occupancyValue.cardinality}</td>
-                            <td>{result.occupancyValue.count}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        )
-    }
-
-
     render() {
         let dataAppearsHere = <p style={{ marginTop: '10px' }}><em>Data will appear here...</em></p>;
         let noResultsFound = <p style={{ marginTop: '10px' }}><em>No results found. Please check your query</em></p>;
 
-        let contents = this.state.loading ? dataAppearsHere : (this.state.data.length > 0) ? Aggregations.renderSearchTable(this.state.data) : this.state.boilerText ? dataAppearsHere : noResultsFound;
+
+
+        let contents;
+        if (this.state.loading) {
+            contents = dataAppearsHere;
+        }
+        else {
+            if (this.state.data.length > 0 && this.state.selectedGroupByArray.length === 1 && this.state.selectedGroupByArray[0] === "organizationId") {
+                contents = renderOccupancyAggsOrganizationTable(this.state.data);
+            }
+            else if (this.state.data.length > 0 && this.state.selectedGroupByArray.length === 1 && this.state.selectedGroupByArray[0] === "sensorId") {
+                contents = renderOccupancyAggsSensorTable(this.state.data);
+            }
+            else if (this.state.data.length > 0 && this.state.selectedGroupByArray.length === 2 && ((this.state.selectedGroupByArray[0] === "sensorId" && this.state.selectedGroupByArray[1] === "organizationId") || (this.state.selectedGroupByArray[0] === "organizationId" && this.state.selectedGroupByArray[1] === "sensorId"))) {
+                contents = renderOccupancyAggsOrganizationSensorTable(this.state.data);
+
+            }
+            else {
+                if (this.state.boilerText) {
+                    contents = dataAppearsHere;
+                } else {
+                    contents = noResultsFound;
+                }
+            }
+        }
         return (
             <div>
                 <h2>Aggregations</h2>
                 <br />
                 <div className="form-group">
                     <em><h6>Group By:</h6></em>
-                    <div class="form-check">
-                        <div classname="form-check">
-                            <input className="form-check-input" type="checkbox" name="organizationId" id="organizationId" value="Organization ID" onChange={this.handleGroupBySelect} />
-                            <label className="form-check-label" for="organizationId">
-                                Organization ID
-                            </label>
-                        </div>
+                    <div classname="form-check">
+                        <input className="form-check-input" type="checkbox" name="organizationId" id="organizationId" value="Organization ID" onChange={this.handleGroupBySelect} />
+                        <label className="form-check-label" for="organizationId">Organization ID</label>
+                    </div>
+                    <div classname="form-check">
+                        <input className="form-check-input" type="checkbox" name="sensorId" id="sensorId" value="Sensor ID" onChange={this.handleGroupBySelect} />
+                        <label className="form-check-label" for="sensorId">Sensor ID</label>
                     </div>
                 </div>
                 <em><h6>Aggregations:</h6></em>

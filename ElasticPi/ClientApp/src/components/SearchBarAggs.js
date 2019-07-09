@@ -26,7 +26,7 @@ export class SearchBarAggs extends Component {
         else {
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
             for (var i = 0; i < this.props.selectedGroupByArray.length; i++) {
-                this.fetchUrl += "&groupby=" + this.props.selectedGroupByArray
+                this.fetchUrl += "&groupby=" + this.props.selectedGroupByArray[i];
             }
             if (this.props.selectedAggs)
                 this.fetchUrl += "&aggsSelect=" + this.props.selectedAggs;

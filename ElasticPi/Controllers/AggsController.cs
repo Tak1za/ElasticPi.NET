@@ -21,15 +21,15 @@ namespace ElasticPi.Controllers
             public double min { get; set; }
             public double max { get; set; }
             public double cardinality { get; set; }
-            public double count { get; set; }
+            public double value_count { get; set; }
         }
         public class DataOccupancy
         {
-            //public string systemGuid { get; set; }
+            public string systemGuid { get; set; }
             public string organizationId { get; set; }
-            //public string sensorId { get; set; }
+            public string sensorId { get; set; }
             public Occupancy occupancyValue { get; set; }
-            //public string captureTime { get; set; }
+            public string captureTime { get; set; }
         }
 
         [HttpGet("[action]")]
@@ -37,11 +37,13 @@ namespace ElasticPi.Controllers
         {
             if (!String.IsNullOrEmpty(aggsSelect) && size > 0 && groupBy.Count > 0)
             {
-                //string index = aggsSelect.ToLower() + "_avg_sum_by_";
                 string index = aggsSelect.ToLower() + "_aggs_by_";
                 for (int i = 0; i < groupBy.Count; i++)
                 {
-                    index += groupBy[i].ToLower();
+                    if (i == groupBy.Count - 1)
+                        index += groupBy[i].ToLower();
+                    else
+                        index += groupBy[i].ToLower() + "_";
                 }
 
                 var settings = new ConnectionSettings(new Uri("http://10.8.173.181"))
