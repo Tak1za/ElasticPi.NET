@@ -3,6 +3,9 @@ import { SearchBarAggs } from './SearchBarAggs';
 import { renderOccupancyAggsOrganizationTable } from './RenderTable.js';
 import { renderOccupancyAggsSensorTable } from './RenderTable.js';
 import { renderOccupancyAggsOrganizationSensorTable } from './RenderTable.js';
+import { renderOccupancyAggsSystemOrganizationSensorTable } from './RenderTable.js';
+import { renderOccupancyAggsOrganizationSystemTable } from './RenderTable.js';
+import { renderOccupancyAggsSensorSystemTable } from './RenderTable.js';
 
 
 export class Aggregations extends Component {
@@ -50,6 +53,7 @@ export class Aggregations extends Component {
         document.getElementById('organizationId').checked = false;
         document.getElementById('sensorId').checked = false;
         document.getElementById('occupancyValue').checked = false;
+        document.getElementById('systemGuid').checked = false;
         this.setState({
             data: [],
             selectedGroupByArray: [],
@@ -77,7 +81,15 @@ export class Aggregations extends Component {
             }
             else if (this.state.data.length > 0 && this.state.selectedGroupByArray.length === 2 && ((this.state.selectedGroupByArray[0] === "sensorId" && this.state.selectedGroupByArray[1] === "organizationId") || (this.state.selectedGroupByArray[0] === "organizationId" && this.state.selectedGroupByArray[1] === "sensorId"))) {
                 contents = renderOccupancyAggsOrganizationSensorTable(this.state.data);
-
+            }
+            else if (this.state.data.length > 0 && this.state.selectedGroupByArray.length === 2 && ((this.state.selectedGroupByArray[0] === "systemGuid" && this.state.selectedGroupByArray[1] === "organizationId") || (this.state.selectedGroupByArray[0] === "organizationId" && this.state.selectedGroupByArray[1] === "systemGuid"))) {
+                contents = renderOccupancyAggsOrganizationSystemTable(this.state.data);
+            }
+            else if (this.state.data.length > 0 && this.state.selectedGroupByArray.length === 2 && ((this.state.selectedGroupByArray[0] === "sensorId" && this.state.selectedGroupByArray[1] === "systemGuid") || (this.state.selectedGroupByArray[0] === "systemGuid" && this.state.selectedGroupByArray[1] === "sensorId"))) {
+                contents = renderOccupancyAggsSensorSystemTable(this.state.data);
+            }
+            else if (this.state.data.length > 0 && this.state.selectedGroupByArray.length === 3) {
+                contents = renderOccupancyAggsSystemOrganizationSensorTable(this.state.data);
             }
             else {
                 if (this.state.boilerText) {
@@ -91,15 +103,22 @@ export class Aggregations extends Component {
             <div>
                 <h2>Aggregations</h2>
                 <br />
+
                 <div className="form-group">
                     <em><h6>Group By:</h6></em>
-                    <div classname="form-check">
-                        <input className="form-check-input" type="checkbox" name="organizationId" id="organizationId" value="Organization ID" onChange={this.handleGroupBySelect} />
-                        <label className="form-check-label" for="organizationId">Organization ID</label>
-                    </div>
-                    <div classname="form-check">
-                        <input className="form-check-input" type="checkbox" name="sensorId" id="sensorId" value="Sensor ID" onChange={this.handleGroupBySelect} />
-                        <label className="form-check-label" for="sensorId">Sensor ID</label>
+                    <div className="form-check">
+                        <div classname="form-check">
+                            <input className="form-check-input" type="checkbox" name="organizationId" id="organizationId" value="Organization ID" onChange={this.handleGroupBySelect} />
+                            <label className="form-check-label" for="organizationId">Organization ID</label>
+                        </div>
+                        <div classname="form-check">
+                            <input className="form-check-input" type="checkbox" name="sensorId" id="sensorId" value="Sensor ID" onChange={this.handleGroupBySelect} />
+                            <label className="form-check-label" for="sensorId">Sensor ID</label>
+                        </div>
+                        <div classname="form-check">
+                            <input className="form-check-input" type="checkbox" name="systemGuid" id="systemGuid" value="System GUID" onChange={this.handleGroupBySelect} />
+                            <label className="form-check-label" for="systemGuid">System GUID</label>
+                        </div>
                     </div>
                 </div>
                 <em><h6>Aggregations:</h6></em>
