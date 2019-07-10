@@ -25,11 +25,16 @@ export class SearchBarAggs extends Component {
         }
         else {
             this.fetchUrl = this.props.fetchUrlBeginning + "?" + this.state.paramUrl;
-            for (var i = 0; i < this.props.selectedGroupByArray.length; i++) {
+            for (var i = 0; i < this.props.selectedGroupByArray.length; i++)
                 this.fetchUrl += "&groupby=" + this.props.selectedGroupByArray[i];
-            }
             if (this.props.selectedAggs)
                 this.fetchUrl += "&aggsSelect=" + this.props.selectedAggs;
+            if (this.props.sensorId)
+                this.fetchUrl += "&" + this.props.sensorId
+            if (this.props.organizationId)
+                this.fetchUrl += "&" + this.props.organizationId
+            if (this.props.systemGuid)
+                this.fetchUrl += "&" + this.props.systemGuid
         }
         console.log(this.fetchUrl);
         fetch(this.fetchUrl)

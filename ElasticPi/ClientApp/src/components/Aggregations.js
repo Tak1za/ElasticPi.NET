@@ -13,18 +13,20 @@ export class Aggregations extends Component {
         super(props);
 
         this.state = {
-            data: [], loading: true, url: 'api/aggs/getaggs', selectedGroupByArray: [], aggsSelect: ""
+            data: [], loading: true, url: 'api/aggs/getaggs', selectedGroupByArray: [], aggsSelect: "", organizationId: "", sensorId: "", systemGuid: "", selectedGroupByValueArray: []
         }
     }
 
     handleGroupBySelect = (event) => {
         if (event.target.checked) {
             this.setState({
-                selectedGroupByArray: [...this.state.selectedGroupByArray, event.target.id]
+                selectedGroupByArray: [...this.state.selectedGroupByArray, event.target.id],
+                selectedGroupByValueArray: [...this.state.selectedGroupByValueArray, event.target.value],
             });
         } else {
             this.setState({
-                selectedGroupByArray: this.state.selectedGroupByArray.filter(item => item !== event.target.id)
+                selectedGroupByArray: this.state.selectedGroupByArray.filter(item => item !== event.target.id),
+                selectedGroupByValueArray: this.state.selectedGroupByValueArray.filter(item => item !== event.target.value),
             });
         }
     }
@@ -34,6 +36,24 @@ export class Aggregations extends Component {
             aggsSelect: event.target.id
         })
 
+    }
+
+    handleCheckedFieldValue = (event) => {
+        if (event.target.id === "systemGuid") {
+            this.setState({
+                systemGuid: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "sensorId") {
+            this.setState({
+                sensorId: event.target.id + "=" + event.target.value
+            });
+        }
+        if (event.target.id === "organizationId") {
+            this.setState({
+                organizationId: event.target.id + "=" + event.target.value
+            });
+        }
     }
 
     fetchedData = (data) => {
@@ -58,7 +78,11 @@ export class Aggregations extends Component {
             data: [],
             selectedGroupByArray: [],
             aggsSelect: "",
-            boilerText: true
+            boilerText: true,
+            selectedGroupByValueArray: [],
+            sensorId: "",
+            organizationId: "",
+            systemGuid: ""
         });
     }
 
@@ -129,7 +153,10 @@ export class Aggregations extends Component {
                     </div>
                 </div>
                 <div className="form-group">
-                    <SearchBarAggs fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} selectedGroupByArray={this.state.selectedGroupByArray} selectedAggs={this.state.aggsSelect} />
+                    {this.state.selectedGroupByValueArray && this.state.selectedGroupByValueArray.length > 0 ? this.state.selectedGroupByValueArray.map((res, i) => (<div key={res}>{res}<input type="text" id={this.state.selectedGroupByArray[i]} className="form-control" onChange={this.handleCheckedFieldValue} name={res} /></div>)) : ""}
+                </div>
+                <div className="form-group">
+                    <SearchBarAggs fetchUrlBeginning={this.state.url} fetchedData={this.fetchedData} loadingData={this.loadingData} selectedGroupByArray={this.state.selectedGroupByArray} selectedAggs={this.state.aggsSelect} sensorId={this.state.sensorId} organizationId={this.state.organizationId} systemGuid={this.state.systemGuid}/>
                 </div>
                 <div className="form-group">
                     <button className="btn btn-primary" type="button" onClick={this.clearData}>Clear</button>

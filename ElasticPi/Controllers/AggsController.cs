@@ -33,7 +33,7 @@ namespace ElasticPi.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<DataOccupancy> GetAggs(List<string> groupBy, string aggsSelect, int size = 10)
+        public IEnumerable<DataOccupancy> GetAggs(List<string> groupBy, string aggsSelect, string organizationId, string sensorId, string systemGuid, int size = 10)
         {
             if (!String.IsNullOrEmpty(aggsSelect) && size > 0 && groupBy.Count > 0)
             {
@@ -50,17 +50,59 @@ namespace ElasticPi.Controllers
                 .DefaultIndex(index);
 
                 var client = new ElasticClient(settings);
+                List<object> fieldsValue = new List<object>();
+                List<string> fieldsName = new List<string>();
 
-                var searchResponse = client.Search<DataOccupancy>(s => s
-                    .Size(size)
-                    .Query(q => q)
-                    .Source(src => src
-                        .IncludeAll()
-                    )
-                );
+                if (!String.IsNullOrEmpty(systemGuid))
+                {
+                    fieldsValue.Add(systemGuid);
+                    fieldsName.Add(nameof(systemGuid));
+                }
 
-                var data = searchResponse.Documents;
-                return data;
+                if (!String.IsNullOrEmpty(sensorId))
+                {
+                    fieldsValue.Add(sensorId);
+                    fieldsName.Add(nameof(sensorId));
+                }
+
+                if (!String.IsNullOrEmpty(organizationId))
+                {
+                    fieldsValue.Add(organizationId);
+                    fieldsName.Add(nameof(organizationId));
+                }
+
+                if (fieldsName.Count <= 0 && fieldsName.Count <= 0)
+                {
+                    var searchResponse = client.Search<DataOccupancy>(s => s
+                        .Size(size)
+                        .Query(q => q)
+                        .Source(src => src
+                            .IncludeAll()
+                        )
+                    );
+
+                    var data = searchResponse.Documents;
+                    return data;
+                }
+                else
+                {
+                    var c = new QueryContainer();
+                    for (int i = 0; i < fieldsValue.Count; i++)
+                    {
+
+                        var q = new TermQuery { Field = fieldsName[i], Value = fieldsValue[i] };
+                        c &= q;
+                    }
+
+                    var searchResponse = client.Search<DataOccupancy>(new SearchRequest<DataOccupancy>
+                    {
+                        Size = size,
+                        Query = c
+                    });
+
+                    var data = searchResponse.Documents;
+                    return data;
+                }
             }
             else
             {
